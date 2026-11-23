@@ -15,6 +15,15 @@ REPLY = "I am on vacation. My replacement is a human. They have already emailed 
 
 
 def main() -> None:
+    # Contract gate: the entry is exactly one line of 1-160 characters.
+    # Validate before writing so a bad reply can never land in /output.
+    if not REPLY or not REPLY.strip():
+        raise ValueError("reply must be non-blank")
+    if "\n" in REPLY or "\r" in REPLY:
+        raise ValueError("reply must be a single line")
+    if not 1 <= len(REPLY) <= 160:
+        raise ValueError(f"reply must be 1-160 characters, got {len(REPLY)}")
+
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(REPLY)
